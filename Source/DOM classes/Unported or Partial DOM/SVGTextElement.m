@@ -26,13 +26,6 @@
 	 And: SVGKit works by pre-baking everything into position (its faster, and avoids Apple's broken CALayer.transform property)
 	 */
 	CGAffineTransform textTransformAbsolute = [SVGHelperUtilities transformAbsoluteIncludingViewportForTransformableOrViewportEstablishingElement:self];
-	/** add on the local x,y that will NOT BE iNCLUDED IN THE TRANSFORM
-	 AUTOMATICALLY BECAUSE THEY ARE NOT TRANSFORM COMMANDS IN SVG SPEC!!
-	 -- but they ARE part of the "implicit transform" of text elements!! (bad SVG Spec design :( )
-	 
-	 NB: the local bits (x/y offset) have to be pre-transformed by
-	 */
-	CGAffineTransform textTransformAbsoluteWithLocalPositionOffset = CGAffineTransformConcat( CGAffineTransformMakeTranslation( [self.x pixelsValue], [self.y pixelsValue]), textTransformAbsolute);
 	
 	/**
 	 Apple's CATextLayer is poor - one of those classes Apple hasn't finished writing?
@@ -115,6 +108,16 @@
 	 */
     label.bounds = unTransformedFinalBounds;
 	
+	/** add on the local x,y that will NOT BE iNCLUDED IN THE TRANSFORM
+	 AUTOMATICALLY BECAUSE THEY ARE NOT TRANSFORM COMMANDS IN SVG SPEC!!
+	 -- but they ARE part of the "implicit transform" of text elements!! (bad SVG Spec design :( )
+	 
+	 NB: the local bits (x/y offset) have to be pre-transformed by
+	 
+	 LUMA: to support relative position, I move it after final bounds is calculated
+	 */
+	CGAffineTransform textTransformAbsoluteWithLocalPositionOffset = CGAffineTransformConcat( CGAffineTransformMakeTranslation( [self.x pixelsValue], [self.y pixelsValue]), textTransformAbsolute);
+	
 	/** NB: specific to Apple: the "origin" is the TOP LEFT corner of first line of text, whereas SVG uses the font's internal origin
 	 (which is BOTTOM LEFT CORNER OF A LETTER SUCH AS 'a' OR 'x' THAT SITS ON THE BASELINE ... so we have to make the FRAME start "font leading" higher up
 	 
@@ -124,16 +127,10 @@
 	 and/or Apple has deprecated REQUIRED methods in their API (with no explanation - e.g. "font leading")
 	 
 	 If/when Apple fixes their bugs - or if you know enough about their API's to workaround the bugs, feel free to fix this code.
+	 
+	 LUMA: why? I think apple origin is good, let's take apple origin for svg text!
 	 */
-    CTLineRef line = CTLineCreateWithAttributedString( (CFMutableAttributedStringRef) tempString );
-    CGFloat ascent = 0;
-    CTLineGetTypographicBounds(line, &ascent, NULL, NULL);
-    CFRelease(line);
-	CGFloat offsetToConvertSVGOriginToAppleOrigin = -ascent;
-	CGSize fakeSizeToApplyNonTranslatingPartsOfTransform = CGSizeMake( 0, offsetToConvertSVGOriginToAppleOrigin);
-	
-	label.position = CGPointMake( 0,
-								 0 + CGSizeApplyAffineTransform( fakeSizeToApplyNonTranslatingPartsOfTransform, textTransformAbsoluteWithLocalPositionOffset).height);
+	label.position = CGPointZero;
     
     NSString *textAnchor = [self cascadedValueForStylableProperty:@"text-anchor"];
     if( [@"middle" isEqualToString:textAnchor] )
