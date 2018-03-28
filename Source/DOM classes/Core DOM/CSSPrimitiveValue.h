@@ -92,9 +92,12 @@ typedef enum {
 
 @interface CSSPrimitiveValue : CSSValue
 
+@property (class, strong, readonly, nonnull) NSDictionary<NSNumber*, NSString*>* anchorIdMap;
 @property(nonatomic) CSSPrimitiveType primitiveType;
 @property(nonatomic) float internalValue;
 @property (nonatomic) CSSRelativeAnchor anchor;
+
++ (NSString* __nonnull)anchorId2Name:(CSSRelativeAnchor)anchor;
 
 -(void) setFloatValue:(CSSPrimitiveType) unitType floatValue:(float) floatValue;
 

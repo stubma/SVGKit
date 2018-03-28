@@ -23,6 +23,18 @@
 
 @synthesize primitiveType;
 
++ (NSDictionary<NSNumber*, NSString*>*)anchorIdMap {
+	return @{@(CSS_ANCHOR_LB): @"lb",
+			 @(CSS_ANCHOR_LT): @"lt",
+			 @(CSS_ANCHOR_RT): @"rt",
+			 @(CSS_ANCHOR_RB): @"rb",
+			 @(CSS_ANCHOR_CENTER): @"c"
+			 };
+}
+
++ (NSString* __nonnull)anchorId2Name:(CSSRelativeAnchor)anchor {
+	return self.anchorIdMap[@(anchor)];
+}
 
 - (id)init
 {
