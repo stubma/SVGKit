@@ -32,7 +32,8 @@
 		self.anchorNameMap = @{@"lb": @(CSS_ANCHOR_LB),
 							   @"lt": @(CSS_ANCHOR_LT),
 							   @"rt": @(CSS_ANCHOR_RT),
-							   @"rb": @(CSS_ANCHOR_RB)
+							   @"rb": @(CSS_ANCHOR_RB),
+							   @"c": @(CSS_ANCHOR_CENTER)
 							   };
 		self.anchor = CSS_ANCHOR_NONE;
     }

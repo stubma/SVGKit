@@ -86,7 +86,8 @@ typedef enum {
 	CSS_ANCHOR_LT,
 	CSS_ANCHOR_LB,
 	CSS_ANCHOR_RT,
-	CSS_ANCHOR_RB
+	CSS_ANCHOR_RB,
+	CSS_ANCHOR_CENTER
 } CSSRelativeAnchor;
 
 @interface CSSPrimitiveValue : CSSValue

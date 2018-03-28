@@ -63,7 +63,6 @@
 	NSString* effectiveText = self.textContent; // FIXME: this is a TEMPORARY HACK, UNTIL PROPER PARSING OF <TSPAN> ELEMENTS IS ADDED
 	
 	effectiveText = [effectiveText stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-	effectiveText = [effectiveText stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
 	
 	/** Calculate 
 	 
@@ -124,6 +123,9 @@
 		case CSS_ANCHOR_RB:
 			x = self.viewport.width + x - suggestedUntransformedSize.width;
 			break;
+		case CSS_ANCHOR_CENTER:
+			x = self.viewport.width / 2 + x - suggestedUntransformedSize.width / 2;
+			break;
 		default:
 			break;
 	}
@@ -131,6 +133,9 @@
 		case CSS_ANCHOR_RB:
 		case CSS_ANCHOR_LB:
 			y = self.viewport.height + y - suggestedUntransformedSize.height;
+			break;
+		case CSS_ANCHOR_CENTER:
+			y = self.viewport.height / 2 + y - suggestedUntransformedSize.height / 2;
 			break;
 		default:
 			break;
