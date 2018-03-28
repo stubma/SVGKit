@@ -16,17 +16,14 @@
 {
 	[super postProcessAttributesAddingErrorsTo:parseResult];
 	
-	// save viewport size
-	SVGRect r = parseResult.rootOfSVGTree.viewport;
-	
 	self.x = [self getAttributeAsSVGLength:@"x"];
-	[self.x convertToAbsolute:r.width];
+	[self.x convertToAbsolute:self.viewport.width];
 	self.y = [self getAttributeAsSVGLength:@"y"];
-	[self.y convertToAbsolute:r.height];
+	[self.y convertToAbsolute:self.viewport.height];
 	self.dx = [self getAttributeAsSVGLength:@"dx"];
-	[self.dx convertToAbsolute:r.width];
+	[self.dx convertToAbsolute:self.viewport.width];
 	self.dy = [self getAttributeAsSVGLength:@"dy"];
-	[self.dy convertToAbsolute:r.height];
+	[self.dy convertToAbsolute:self.viewport.height];
 	self.rotate = [self getAttributeAsSVGLength:@"rotate"];
 }
 

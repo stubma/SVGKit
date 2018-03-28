@@ -43,7 +43,6 @@
 /*! This is used when generating CALayer objects, to store the id of the SVGElement that created the CALayer */
 #define kSVGElementIdentifier @"SVGElementIdentifier"
 
-
 #pragma mark - SVG-spec supporting methods that aren't in the Spec itself
 
 - (id)initWithLocalName:(NSString*) n attributes:(NSMutableDictionary*) attributes;

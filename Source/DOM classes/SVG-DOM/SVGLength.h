@@ -26,6 +26,7 @@
  };
  */
 #import <Foundation/Foundation.h>
+#import "CSSPrimitiveValue.h"
 
 typedef enum SVG_LENGTH_TYPE
 {
@@ -49,6 +50,7 @@ typedef enum SVG_LENGTH_TYPE
 @property(nonatomic) float value;
 @property(nonatomic) float valueInSpecifiedUnits;
 @property(nonatomic,strong) NSString* valueAsString;
+@property (nonatomic, readonly) CSSRelativeAnchor anchor;
 	
 -(void) newValueSpecifiedUnits:(SVG_LENGTH_TYPE) unitType valueInSpecifiedUnits:(float) valueInSpecifiedUnits;
 -(void) convertToSpecifiedUnits:(SVG_LENGTH_TYPE) unitType;

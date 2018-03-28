@@ -81,10 +81,19 @@ typedef enum CSSPrimitiveType
 	CSS_RGBCOLOR                   = 25
 } CSSPrimitiveType;
 
+typedef enum {
+	CSS_ANCHOR_NONE = 0,
+	CSS_ANCHOR_LT,
+	CSS_ANCHOR_LB,
+	CSS_ANCHOR_RT,
+	CSS_ANCHOR_RB
+} CSSRelativeAnchor;
+
 @interface CSSPrimitiveValue : CSSValue
 
 @property(nonatomic) CSSPrimitiveType primitiveType;
 @property(nonatomic) float internalValue;
+@property (nonatomic) CSSRelativeAnchor anchor;
 
 -(void) setFloatValue:(CSSPrimitiveType) unitType floatValue:(float) floatValue;
 

@@ -10,6 +10,7 @@
 
 #import "SVGHelperUtilities.h"
 #import "SVGUtils.h"
+#import "CSSPrimitiveValue.h"
 
 @implementation SVGTextElement
 
@@ -116,7 +117,25 @@
 	 
 	 LUMA: to support relative position, I move it after final bounds is calculated
 	 */
-	CGAffineTransform textTransformAbsoluteWithLocalPositionOffset = CGAffineTransformConcat( CGAffineTransformMakeTranslation( [self.x pixelsValue], [self.y pixelsValue]), textTransformAbsolute);
+	float x = [self.x pixelsValue];
+	float y = [self.y pixelsValue];
+	switch(self.x.anchor) {
+		case CSS_ANCHOR_RT:
+		case CSS_ANCHOR_RB:
+			x = self.viewport.width + x - suggestedUntransformedSize.width;
+			break;
+		default:
+			break;
+	}
+	switch (self.y.anchor) {
+		case CSS_ANCHOR_RB:
+		case CSS_ANCHOR_LB:
+			y = self.viewport.height + y - suggestedUntransformedSize.height;
+			break;
+		default:
+			break;
+	}
+	CGAffineTransform textTransformAbsoluteWithLocalPositionOffset = CGAffineTransformConcat( CGAffineTransformMakeTranslation(x, y), textTransformAbsolute);
 	
 	/** NB: specific to Apple: the "origin" is the TOP LEFT corner of first line of text, whereas SVG uses the font's internal origin
 	 (which is BOTTOM LEFT CORNER OF A LETTER SUCH AS 'a' OR 'x' THAT SITS ON THE BASELINE ... so we have to make the FRAME start "font leading" higher up

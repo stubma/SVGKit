@@ -10,6 +10,7 @@
 @interface CSSPrimitiveValue()
 
 @property(nonatomic,strong) NSString* internalString;
+@property (strong, nonatomic) NSDictionary<NSString*, NSNumber*>* anchorNameMap;
 
 @end
 
@@ -28,6 +29,12 @@
     self = [super initWithUnitType:CSS_PRIMITIVE_VALUE];
     if (self) {
 		self.pixelsPerInch = 1.0f; // this can be overridden by classes that import the CSSPrimitiveValue_ConfigurablePixelsPerInch.h header
+		self.anchorNameMap = @{@"lb": @(CSS_ANCHOR_LB),
+							   @"lt": @(CSS_ANCHOR_LT),
+							   @"rt": @(CSS_ANCHOR_RT),
+							   @"rb": @(CSS_ANCHOR_RB)
+							   };
+		self.anchor = CSS_ANCHOR_NONE;
     }
     return self;
 }
@@ -229,65 +236,77 @@
 		self.internalValue = 0.0f;
 		self.internalString = @"";
 		self.primitiveType = CSS_UNKNOWN;
-	}
-	else if( [_cssText hasSuffix:@"%"])
-		[self setFloatValue:CSS_PERCENTAGE floatValue:[_cssText floatValue]];
-	else if( [_cssText hasSuffix:@"em"])
-		[self setFloatValue:CSS_EMS floatValue:[_cssText floatValue]];
-	else if( [_cssText hasSuffix:@"ex"])
-		[self setFloatValue:CSS_EXS floatValue:[_cssText floatValue]];
-	else if( [_cssText hasSuffix:@"px"])
-		[self setFloatValue:CSS_PX floatValue:[_cssText floatValue]];
-	else if( [_cssText hasSuffix:@"cm"])
-		[self setFloatValue:CSS_CM floatValue:[_cssText floatValue]];
-	else if( [_cssText hasSuffix:@"mm"])
-		[self setFloatValue:CSS_MM floatValue:[_cssText floatValue]];
-	else if( [_cssText hasSuffix:@"in"])
-		[self setFloatValue:CSS_IN floatValue:[_cssText floatValue]];
-	else if( [_cssText hasSuffix:@"pt"])
-		[self setFloatValue:CSS_PT floatValue:[_cssText floatValue]];
-	else if( [_cssText hasSuffix:@"pc"])
-		[self setFloatValue:CSS_PC floatValue:[_cssText floatValue]];
-	else if( [_cssText hasSuffix:@"deg"])
-		[self setFloatValue:CSS_DEG floatValue:[_cssText floatValue]];
-	else if( [_cssText hasSuffix:@"rad"])
-		[self setFloatValue:CSS_RAD floatValue:[_cssText floatValue]];
-	else if( [_cssText hasSuffix:@"grad"])
-		[self setFloatValue:CSS_GRAD floatValue:[_cssText floatValue]];
-	else if( [_cssText hasSuffix:@"ms"])
-		[self setFloatValue:CSS_MS floatValue:[_cssText floatValue]];
-	else if( [_cssText hasSuffix:@"s"])
-		[self setFloatValue:CSS_S floatValue:[_cssText floatValue]];
-	else if( [_cssText hasSuffix:@"khz"]) // -----------NB: check this before checking HZ !
-		[self setFloatValue:CSS_KHZ floatValue:[_cssText floatValue]];
-	else if( [_cssText hasSuffix:@"hz"])
-		[self setFloatValue:CSS_HZ floatValue:[_cssText floatValue]];
-	else
-	{
-		/**
-		 Three possible outcomes left:
-		 
-		 1. It's a pure number, no units (in CSS, that's rare - but in SVG it's common, and defined by Spec to be "the same as PX")
-		 2. It's a string, one of many different CSS string types
-		 3. It's a corrupt file
-		 */
-		
-		/**
-		 NSScaner is an Apple class that SPECIFICALLY will refuse to return a number if there are any non-numberic characters in the string */
-		NSScanner *scanner = [NSScanner scannerWithString: _cssText];
-		float floatToHoldTheOutput;
-		if( [scanner scanFloat:&floatToHoldTheOutput])
-		{
-			/* Option 1: it's a pure number */
-			[self setFloatValue:CSS_NUMBER floatValue:floatToHoldTheOutput];
+	} else {
+		// EXTENDED by luma
+		// search @ in css text, it means relative position
+		// lb: left bottom, lt: left top, rb/rt ...
+		// 5@lb means left bottom corner is 5 pixel away viewport left bottom
+		NSInteger atIdx = [_cssText rangeOfString:@"@"].location;
+		if(atIdx != NSNotFound) {
+			NSArray<NSString*>* parts = [_cssText componentsSeparatedByString:@"@"];
+			_cssText = parts[0];
+			self.anchor = [self.anchorNameMap[parts[1]] intValue];
 		}
+		
+		if( [_cssText hasSuffix:@"%"])
+			[self setFloatValue:CSS_PERCENTAGE floatValue:[_cssText floatValue]];
+		else if( [_cssText hasSuffix:@"em"])
+			[self setFloatValue:CSS_EMS floatValue:[_cssText floatValue]];
+		else if( [_cssText hasSuffix:@"ex"])
+			[self setFloatValue:CSS_EXS floatValue:[_cssText floatValue]];
+		else if( [_cssText hasSuffix:@"px"])
+			[self setFloatValue:CSS_PX floatValue:[_cssText floatValue]];
+		else if( [_cssText hasSuffix:@"cm"])
+			[self setFloatValue:CSS_CM floatValue:[_cssText floatValue]];
+		else if( [_cssText hasSuffix:@"mm"])
+			[self setFloatValue:CSS_MM floatValue:[_cssText floatValue]];
+		else if( [_cssText hasSuffix:@"in"])
+			[self setFloatValue:CSS_IN floatValue:[_cssText floatValue]];
+		else if( [_cssText hasSuffix:@"pt"])
+			[self setFloatValue:CSS_PT floatValue:[_cssText floatValue]];
+		else if( [_cssText hasSuffix:@"pc"])
+			[self setFloatValue:CSS_PC floatValue:[_cssText floatValue]];
+		else if( [_cssText hasSuffix:@"deg"])
+			[self setFloatValue:CSS_DEG floatValue:[_cssText floatValue]];
+		else if( [_cssText hasSuffix:@"rad"])
+			[self setFloatValue:CSS_RAD floatValue:[_cssText floatValue]];
+		else if( [_cssText hasSuffix:@"grad"])
+			[self setFloatValue:CSS_GRAD floatValue:[_cssText floatValue]];
+		else if( [_cssText hasSuffix:@"ms"])
+			[self setFloatValue:CSS_MS floatValue:[_cssText floatValue]];
+		else if( [_cssText hasSuffix:@"s"])
+			[self setFloatValue:CSS_S floatValue:[_cssText floatValue]];
+		else if( [_cssText hasSuffix:@"khz"]) // -----------NB: check this before checking HZ !
+			[self setFloatValue:CSS_KHZ floatValue:[_cssText floatValue]];
+		else if( [_cssText hasSuffix:@"hz"])
+			[self setFloatValue:CSS_HZ floatValue:[_cssText floatValue]];
 		else
 		{
-			/* Option 2: it's a string - or corrupt, which we're not going to handle here */
+			/**
+			 Three possible outcomes left:
+			 
+			 1. It's a pure number, no units (in CSS, that's rare - but in SVG it's common, and defined by Spec to be "the same as PX")
+			 2. It's a string, one of many different CSS string types
+			 3. It's a corrupt file
+			 */
+			
+			/**
+			 NSScaner is an Apple class that SPECIFICALLY will refuse to return a number if there are any non-numberic characters in the string */
+			NSScanner *scanner = [NSScanner scannerWithString: _cssText];
+			float floatToHoldTheOutput;
+			if( [scanner scanFloat:&floatToHoldTheOutput])
+			{
+				/* Option 1: it's a pure number */
+				[self setFloatValue:CSS_NUMBER floatValue:floatToHoldTheOutput];
+			}
+			else
+			{
+				/* Option 2: it's a string - or corrupt, which we're not going to handle here */
 #if DEBUG_DOM_PARSING
-			SVGKitLogVerbose(@"[%@] WARNING: not bothering to work out 'what kind of CSS string' this string is. CSS is stupid. String = %@", [self class], _cssText );
+				SVGKitLogVerbose(@"[%@] WARNING: not bothering to work out 'what kind of CSS string' this string is. CSS is stupid. String = %@", [self class], _cssText );
 #endif
-			[self setStringValue:CSS_STRING stringValue:_cssText]; // -------- NB: we allow any string-to-string conversion, so it's not a huge problem that we dont correctly detect "url" versus "other kind of string". I hate CSS Parsing...
+				[self setStringValue:CSS_STRING stringValue:_cssText]; // -------- NB: we allow any string-to-string conversion, so it's not a huge problem that we dont correctly detect "url" versus "other kind of string". I hate CSS Parsing...
+			}
 		}
 	}
 }

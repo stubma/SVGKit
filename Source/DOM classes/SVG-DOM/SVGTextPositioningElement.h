@@ -9,9 +9,9 @@
  readonly attribute SVGAnimatedNumberList rotate;
  */
 #import <UIKit/UIKit.h>
-
 #import "SVGTextContentElement.h"
 #import "SVGLength.h"
+#import "SVGRect.h"
 
 @interface SVGTextPositioningElement : SVGTextContentElement
 

@@ -121,6 +121,10 @@ static float cachedDevicePixelsPerInch;
 	}
 }
 
+- (CSSRelativeAnchor)anchor {
+	return self.internalCSSPrimitiveValue.anchor;
+}
+
 -(float) pixelsValue
 {
 	return [self.internalCSSPrimitiveValue getFloatValue:CSS_PX];
