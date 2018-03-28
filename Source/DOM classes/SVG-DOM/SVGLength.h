@@ -58,6 +58,9 @@ typedef enum SVG_LENGTH_TYPE
 +(SVGLength*) svgLengthZero;
 +(SVGLength*) svgLengthFromNSString:(NSString*) s;
 
+// if it is a relative value, convert it to absolute value based on viewport rect
+- (void)convertToAbsolute:(float)dimension;
+
 /** returns this SVGLength as if it had been converted to pixels, using [self convertToSpecifiedUnits:SVG_LENGTHTYPE_PX]
  */
 -(float) pixelsValue;

@@ -9,7 +9,6 @@
 
 @interface CSSPrimitiveValue()
 
-@property(nonatomic) float internalValue;
 @property(nonatomic,strong) NSString* internalString;
 
 @end

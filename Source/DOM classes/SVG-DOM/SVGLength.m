@@ -107,6 +107,20 @@ static float cachedDevicePixelsPerInch;
 	return result;
 }
 
+- (void)convertToAbsolute:(float)dimension {
+	switch(self.internalCSSPrimitiveValue.primitiveType) {
+		case CSS_PERCENTAGE:
+		{
+			float value = self.internalCSSPrimitiveValue.internalValue / 100.0 * dimension;
+			[self.internalCSSPrimitiveValue setFloatValue:CSS_PX floatValue:value];
+			break;
+		}
+		default:
+			// not relative, do nothing
+			break;
+	}
+}
+
 -(float) pixelsValue
 {
 	return [self.internalCSSPrimitiveValue getFloatValue:CSS_PX];

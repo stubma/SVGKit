@@ -84,6 +84,7 @@ typedef enum CSSPrimitiveType
 @interface CSSPrimitiveValue : CSSValue
 
 @property(nonatomic) CSSPrimitiveType primitiveType;
+@property(nonatomic) float internalValue;
 
 -(void) setFloatValue:(CSSPrimitiveType) unitType floatValue:(float) floatValue;
 
