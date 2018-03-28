@@ -4,6 +4,8 @@
 
 @interface SVGElement ()
 
+// viewport rect
+@property (assign, nonatomic) SVGRect viewport;
 
 + (BOOL)shouldStoreContent; // to optimize parser, default is NO
 

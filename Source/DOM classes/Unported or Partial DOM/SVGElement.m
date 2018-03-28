@@ -204,6 +204,10 @@
 	// to be overriden by subclasses
 	// make sure super implementation is called
 	
+	// save viewport size
+	SVGRect r = parseResult.rootOfSVGTree.viewport;
+	self.viewport = r;
+	
 	if( [[self getAttribute:@"id"] length] > 0 )
 		self.identifier = [self getAttribute:@"id"];
 	
