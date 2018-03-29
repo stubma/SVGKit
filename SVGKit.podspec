@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
                  'Eric Man'        => 'Eric@eric-mans-macbook-2.local' }
   s.source   = { :git => 'https://github.com/SVGKit/SVGKit.git', :branch => "2.x" }
 
-  s.ios.source_files = 'Source/*{.h,m}', 'Source/DOM classes/**/*.{h,m}', 'Source/Exporters/*.{h,m}', 'Source/Parsers/**/*.{h,m}', 'Source/QuartzCore additions/**/*.{h,m}', 'Source/Sources/**/*.{h,m}', 'Source/UIKit additions/**/*.{h,m}', 'Source/Unsorted/**/*.{h,m}'
+  s.ios.source_files = 'Source/*{.h,m,mm}', 'Source/DOM classes/**/*.{h,m,mm}', 'Source/Exporters/*.{h,m,mm}', 'Source/Parsers/**/*.{h,m,mm}', 'Source/QuartzCore additions/**/*.{h,m,mm}', 'Source/Sources/**/*.{h,m,mm}', 'Source/UIKit additions/**/*.{h,m,mm}', 'Source/Unsorted/**/*.{h,m,mm}'
   s.tvos.deployment_target = '9.0'
   s.libraries = 'xml2'
   s.framework = 'QuartzCore', 'CoreText'

@@ -11,6 +11,7 @@
 #import "SVGHelperUtilities.h"
 #import "SVGUtils.h"
 #import "CSSPrimitiveValue.h"
+#import "SVGRichText.h"
 
 @implementation SVGTextElement
 
@@ -51,44 +52,20 @@
 	/** find a valid font reference, or Apple's APIs will break later */
 	/** undocumented Apple bug: CTFontCreateWithName cannot accept nil input*/
 	CTFontRef font = NULL;
-	if( actualFamily != nil)
-		font = CTFontCreateWithName( (CFStringRef)actualFamily, effectiveFontSize, NULL);
-	if( font == NULL ) {
-		// Spec says to use "whatever default font-family is normal for your system". Use HelveticaNeue, the default since iOS 7.
-		font = CTFontCreateWithName( (CFStringRef) @"HelveticaNeue", effectiveFontSize, NULL);
+	if(!actualFamily) {
+		actualFamily = @"HelveticaNeue";
 	}
 
 	/** Convert all whitespace to spaces, and trim leading/trailing (SVG doesn't support leading/trailing whitespace, and doesnt support CR LF etc) */
 	
-	NSString* effectiveText = self.textContent; // FIXME: this is a TEMPORARY HACK, UNTIL PROPER PARSING OF <TSPAN> ELEMENTS IS ADDED
+	// parse rich text string
+	SVGRichText* rich = [[SVGRichText alloc] initWithTagText:[self.textContent stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+													fontName:actualFamily
+													fontSize:effectiveFontSize];
 	
-	effectiveText = [effectiveText stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-	
-	/** Calculate 
-	 
-	 1. Create an attributed string (Apple's APIs are hard-coded to require this)
-	 2. Set the font to be the correct one + correct size for whole string, inside the string
-	 3. Ask apple how big the final thing should be
-	 4. Use that to provide a layer.frame
-	 */
-	NSMutableAttributedString* tempString = [[NSMutableAttributedString alloc] initWithString:effectiveText];
-	[tempString addAttribute:(NSString *)kCTFontAttributeName
-					  value:(__bridge id)font
-					  range:NSMakeRange(0, tempString.string.length)];
-	CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString( (CFMutableAttributedStringRef) tempString );
-    CGSize suggestedUntransformedSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, 0), NULL, CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX), NULL);
-    CFRelease(framesetter);
-	
-	CGRect unTransformedFinalBounds = CGRectMake( 0,
-											  0,
-											  suggestedUntransformedSize.width,
-											  suggestedUntransformedSize.height); // everything's been pre-scaled by [self transformAbsolute]
-	
+	// create text layer
     CATextLayer *label = [[CATextLayer alloc] init];
     [SVGHelperUtilities configureCALayer:label usingElement:self];
-	
-    label.font = font; /** WARNING: Apple docs say you "CANNOT" assign a UIFont instance here, for some reason they didn't bridge it with CGFont */
-  CFRelease(font);
 	
 	/** This is complicated for three reasons.
 	 Partly: Apple and SVG use different defitions for the "origin" of a piece of text
@@ -106,7 +83,7 @@
 	     v. BECAUSE SVG AND APPLE DEFINE ORIGIN DIFFERENTLY: subtract the "untransformed" height of the font ... BUT: pre-transformed ONLY BY the 'multiplying (non-translating)' part of the TRANSFORM.
 	     vi. set the bounds to be (whatever Apple's CoreText says is necessary to render TEXT at FONT SIZE, with NO TRANSFORMS)
 	 */
-    label.bounds = unTransformedFinalBounds;
+    label.bounds = rich.bounds;
 	
 	/** add on the local x,y that will NOT BE iNCLUDED IN THE TRANSFORM
 	 AUTOMATICALLY BECAUSE THEY ARE NOT TRANSFORM COMMANDS IN SVG SPEC!!
@@ -121,10 +98,10 @@
 	switch(self.x.anchor) {
 		case CSS_ANCHOR_RT:
 		case CSS_ANCHOR_RB:
-			x = self.viewport.width + x - suggestedUntransformedSize.width;
+			x = self.viewport.width + x - rich.bounds.size.width;
 			break;
 		case CSS_ANCHOR_CENTER:
-			x = self.viewport.width / 2 + x - suggestedUntransformedSize.width / 2;
+			x = self.viewport.width / 2 + x - rich.bounds.size.width / 2;
 			break;
 		default:
 			break;
@@ -132,10 +109,10 @@
 	switch (self.y.anchor) {
 		case CSS_ANCHOR_RB:
 		case CSS_ANCHOR_LB:
-			y = self.viewport.height + y - suggestedUntransformedSize.height;
+			y = self.viewport.height + y - rich.bounds.size.height;
 			break;
 		case CSS_ANCHOR_CENTER:
-			y = self.viewport.height / 2 + y - suggestedUntransformedSize.height / 2;
+			y = self.viewport.height / 2 + y - rich.bounds.size.height / 2;
 			break;
 		default:
 			break;
@@ -166,7 +143,7 @@
     
 	label.affineTransform = textTransformAbsoluteWithLocalPositionOffset;
 	label.fontSize = effectiveFontSize;
-    label.string = effectiveText;
+    label.string = rich.richText;
     label.alignmentMode = kCAAlignmentLeft;
     
     label.foregroundColor = [SVGHelperUtilities parseFillForElement:self];

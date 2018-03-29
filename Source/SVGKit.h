@@ -122,6 +122,7 @@ FOUNDATION_EXPORT const unsigned char SVGKitFramework_VersionString[];
 #import "SVGGElement.h"
 #import "SVGStylable.h"
 #import "SVGLength.h"
+#import "SVGRichText.h"
 #import "SVGMatrix.h"
 #import "SVGNumber.h"
 #import "SVGPoint.h"
