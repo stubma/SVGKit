@@ -139,11 +139,20 @@
         label.anchorPoint = CGPointMake(1.0, 0.0);
     else
         label.anchorPoint = CGPointZero; // WARNING: SVG applies transforms around the top-left as origin, whereas Apple defaults to center as origin, so we tell Apple to work "like SVG" here.
-    
+	
+	// alignment
+	NSString *textAlign = [self cascadedValueForStylableProperty:@"text-align"];
+	if([@"right" isEqualToString:textAlign]) {
+		label.alignmentMode = kCAAlignmentCenter;
+	} else if([@"center" isEqualToString:textAlign]) {
+		label.alignmentMode = kCAAlignmentCenter;
+	} else {
+    	label.alignmentMode = kCAAlignmentLeft;
+	}
+	
 	label.affineTransform = textTransformAbsoluteWithLocalPositionOffset;
 	label.fontSize = effectiveFontSize;
-    label.string = rich.richText;
-    label.alignmentMode = kCAAlignmentLeft;
+	label.string = rich.richText;
     
     label.foregroundColor = [SVGHelperUtilities parseFillForElement:self];
 #if TARGET_OS_IPHONE
