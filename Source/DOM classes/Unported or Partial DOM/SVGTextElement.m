@@ -51,8 +51,7 @@
 	
 	/** find a valid font reference, or Apple's APIs will break later */
 	/** undocumented Apple bug: CTFontCreateWithName cannot accept nil input*/
-	CTFontRef font = NULL;
-	if(!actualFamily) {
+	if(actualFamily == nil) {
 		actualFamily = @"HelveticaNeue";
 	}
 

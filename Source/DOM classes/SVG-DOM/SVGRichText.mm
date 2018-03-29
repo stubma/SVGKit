@@ -344,11 +344,11 @@ static void setColorSpan(Span& top, CFMutableAttributedStringRef plainCFAStr, CG
 }
 
 - (instancetype)initWithTagText:(NSString*)tagText fontName:(NSString*)fontName {
-	return [self initWithTagText:tagText fontName:@"Helvetica" fontSize:20];
+	return [self initWithTagText:tagText fontName:fontName fontSize:20];
 }
 
 - (instancetype)initWithTagText:(NSString*)tagText fontName:(NSString*)fontName fontSize:(CGFloat)fontSize {
-	return [self initWithTagText:tagText fontName:@"Helvetica" fontSize:20 alignment:NSTextAlignmentLeft];
+	return [self initWithTagText:tagText fontName:fontName fontSize:fontSize alignment:NSTextAlignmentLeft];
 }
 
 - (instancetype)initWithTagText:(NSString*)tagText fontName:(NSString*)fontName fontSize:(CGFloat)fontSize alignment:(NSTextAlignment)alignment {
