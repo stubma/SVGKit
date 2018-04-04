@@ -23,6 +23,8 @@
 	CGRect _layerRect;
 }
 
+- (void)updatePathShape;
+
 /** The actual path as parsed from the original file. THIS MIGHT NOT BE NORMALISED (TODO: perhaps an extra feature?) */
 @property (nonatomic, readonly) CGPathRef pathForShapeInRelativeCoords;
 

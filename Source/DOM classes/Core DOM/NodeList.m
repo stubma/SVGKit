@@ -20,6 +20,20 @@
 	return [self.internalArray objectAtIndex:index];
 }
 
+- (NSInteger)indexOf:(Node*)child {
+	return [self.internalArray indexOfObject:child];
+}
+
+- (NSArray<Node*>*)subarrayOfClass:(Class)klass {
+	NSMutableArray<Node*>* ret = [NSMutableArray array];
+	[self.internalArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+		if([obj isKindOfClass:klass]) {
+			[ret addObject:obj];
+		}
+	}];
+	return ret;
+}
+
 -(NSUInteger)length
 {
 	return [self.internalArray count];

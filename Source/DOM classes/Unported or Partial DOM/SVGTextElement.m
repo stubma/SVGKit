@@ -66,6 +66,10 @@
     CATextLayer *label = [[CATextLayer alloc] init];
     [SVGHelperUtilities configureCALayer:label usingElement:self];
 	
+	// set default color
+	label.foregroundColor = [SVGHelperUtilities parseFillForElement:self];
+	rich.textColor = [UIColor colorWithCGColor:label.foregroundColor];
+	
 	/** This is complicated for three reasons.
 	 Partly: Apple and SVG use different defitions for the "origin" of a piece of text
 	 Partly: Bugs in Apple's CoreText
@@ -153,8 +157,7 @@
 	label.affineTransform = textTransformAbsoluteWithLocalPositionOffset;
 	label.fontSize = effectiveFontSize;
 	label.string = rich.richText;
-    
-    label.foregroundColor = [SVGHelperUtilities parseFillForElement:self];
+	
 #if TARGET_OS_IPHONE
     label.contentsScale = [[UIScreen mainScreen] scale];
 #endif

@@ -57,8 +57,11 @@ typedef enum SVG_LENGTH_TYPE
 
 #pragma mark - things outside the spec but needed to make it usable in Objective C
 
-+(SVGLength*) svgLengthZero;
-+(SVGLength*) svgLengthFromNSString:(NSString*) s;
++ (instancetype) svgLengthZero;
++ (instancetype) svgLengthFromNSString:(NSString*) s;
++ (instancetype)svgLengthFromFloat:(float)v;
+
+- (id)initWithCSSPrimitiveValue:(CSSPrimitiveValue*) pv;
 
 // if it is a relative value, convert it to absolute value based on viewport rect
 - (void)convertToAbsolute:(float)dimension;

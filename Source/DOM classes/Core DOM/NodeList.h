@@ -23,6 +23,8 @@
 
 @property(readonly) NSUInteger length;
 
+- (NSInteger)indexOf:(Node*)child;
 -(Node*) item:(NSUInteger) index;
+- (NSArray<Node*>*)subarrayOfClass:(Class)klass;
 
 @end

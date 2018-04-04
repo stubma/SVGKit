@@ -200,6 +200,24 @@
 	return svgLength;
 }
 
+- (float)parentClientWidth {
+	float dim = self.viewport.width;
+	if([self.parentNode isKindOfClass:[SVGGElement class]]) {
+		SVGGElement* g = (SVGGElement*)self.parentNode;
+		dim = g.clientWidth;
+	}
+	return dim;
+}
+
+- (float)parentClientHeight {
+	float dim = self.viewport.height;
+	if([self.parentNode isKindOfClass:[SVGGElement class]]) {
+		SVGGElement* g = (SVGGElement*)self.parentNode;
+		dim = g.clientHeight;
+	}
+	return dim;
+}
+
 - (void)postProcessAttributesAddingErrorsTo:(SVGKParseResult *)parseResult  {
 	// to be overriden by subclasses
 	// make sure super implementation is called

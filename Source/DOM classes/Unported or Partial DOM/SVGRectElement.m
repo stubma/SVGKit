@@ -1,5 +1,5 @@
 #import "SVGRectElement.h"
-
+#import "SVGGElement.h"
 #import "SVGElement_ForParser.h" // to resolve Xcode circular dependencies; in long term, parsing SHOULD NOT HAPPEN inside any class whose name starts "SVG" (because those are reserved classes for the SVG Spec)
 
 #import "SVGHelperUtilities.h"
@@ -66,6 +66,44 @@ void CGPathAddRoundedRect (CGMutablePathRef path, CGRect rect, CGFloat radiusX, 
 }
 #endif
 
+- (void)updatePathShape {
+	float pcw = self.parentClientWidth;
+	float pch = self.parentClientHeight;
+	
+	CGMutablePathRef path = CGPathCreateMutable();
+	CGRect rect = CGRectMake([_x pixelsValueWithDimension:pcw], [_y pixelsValueWithDimension:pch],
+							 [_width pixelsValueWithDimension:pcw], [_height pixelsValueWithDimension:pch]);
+	
+	CGFloat radiusXPixels = _rx != nil ? [_rx pixelsValue] : 0;
+	CGFloat radiusYPixels = _ry != nil ? [_ry pixelsValue] : 0;
+	
+	if( radiusXPixels == 0 && radiusYPixels == 0 )
+	{
+		CGPathAddRect(path, NULL, rect);
+	}
+	else
+	{
+		if( radiusXPixels > 0 && radiusYPixels == 0 ) // if RY unspecified, make it equal to RX
+			radiusYPixels = radiusXPixels;
+		else if( radiusXPixels == 0 && radiusYPixels > 0 ) // if RX unspecified, make it equal to RY
+			radiusXPixels = radiusYPixels;
+		
+		if( radiusXPixels > CGRectGetWidth(rect) / 2 ) // give RX max value of half rect width
+			radiusXPixels = CGRectGetWidth(rect) / 2;
+		
+		if( radiusYPixels > CGRectGetHeight(rect) / 2 ) // give RY max value of half rect height
+			radiusYPixels = CGRectGetHeight(rect) / 2;
+		
+		CGPathAddRoundedRect(path,
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_7_0
+							 nil,
+#endif
+							 rect, radiusXPixels, radiusYPixels);
+	}
+	self.pathForShapeInRelativeCoords = path;
+	CGPathRelease(path);
+}
+
 - (void)postProcessAttributesAddingErrorsTo:(SVGKParseResult *)parseResult {
 	[super postProcessAttributesAddingErrorsTo:parseResult];
 	
@@ -91,42 +129,25 @@ void CGPathAddRoundedRect (CGMutablePathRef path, CGRect rect, CGFloat radiusX, 
 	 Create a square OR rounded rectangle as a CGPath
 	 
 	 */
-
-    SVGRect r = parseResult.rootOfSVGTree.viewport;
-
-	CGMutablePathRef path = CGPathCreateMutable();
-    CGRect rect = CGRectMake([_x pixelsValueWithDimension:r.x], [_y pixelsValueWithDimension:r.y],
-                             [_width pixelsValueWithDimension:r.width], [_height pixelsValueWithDimension:r.height]);
-	
-	CGFloat radiusXPixels = _rx != nil ? [_rx pixelsValue] : 0;
-	CGFloat radiusYPixels = _ry != nil ? [_ry pixelsValue] : 0;
-	
-	if( radiusXPixels == 0 && radiusYPixels == 0 )
-	{
-		CGPathAddRect(path, NULL, rect);
-	}
-	else
-	{
-		if( radiusXPixels > 0 && radiusYPixels == 0 ) // if RY unspecified, make it equal to RX
-			radiusYPixels = radiusXPixels;
-		else if( radiusXPixels == 0 && radiusYPixels > 0 ) // if RX unspecified, make it equal to RY
-			radiusXPixels = radiusYPixels;
-        
-        if( radiusXPixels > CGRectGetWidth(rect) / 2 ) // give RX max value of half rect width
-            radiusXPixels = CGRectGetWidth(rect) / 2;
-        
-        if( radiusYPixels > CGRectGetHeight(rect) / 2 ) // give RY max value of half rect height
-            radiusYPixels = CGRectGetHeight(rect) / 2;
-		
-		CGPathAddRoundedRect(path,
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_7_0 
-							 nil,
-#endif
-							 rect, radiusXPixels, radiusYPixels);
-	}
-	self.pathForShapeInRelativeCoords = path;
-	CGPathRelease(path);
+	[self updatePathShape];
 }
 
+- (CALayer *) newLayer {
+	// if width/height not set, use g size if parent node is g element
+	if(!self.width || !self.height) {
+		if([self.parentNode isKindOfClass:[SVGGElement class]]) {
+			SVGGElement* g = (SVGGElement*)self.parentNode;
+			if(!self.width) {
+				self.width = [SVGLength svgLengthFromFloat:g.clientWidth];
+			}
+			if(!self.height) {
+				self.height = [SVGLength svgLengthFromFloat:g.clientHeight];
+			}
+			[self updatePathShape];
+		}
+	}
+	
+	return [super newLayer];
+}
 
 @end

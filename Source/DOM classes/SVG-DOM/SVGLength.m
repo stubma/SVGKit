@@ -87,15 +87,21 @@
 	cachedDevicePixelsPerInch = [self pixelsPerInchForCurrentDevice];
 }
 
-+(SVGLength*) svgLengthZero
++(instancetype) svgLengthZero
 {
 	SVGLength* result = [[SVGLength alloc] initWithCSSPrimitiveValue:nil];
 	
 	return result;
 }
 
++ (instancetype)svgLengthFromFloat:(float)v {
+	CSSPrimitiveValue* pv = [CSSPrimitiveValue new];
+	pv.cssText = [NSString stringWithFormat:@"%g", v];
+	return [[SVGLength alloc] initWithCSSPrimitiveValue:pv];
+}
+
 static float cachedDevicePixelsPerInch;
-+(SVGLength*) svgLengthFromNSString:(NSString*) s
++(instancetype) svgLengthFromNSString:(NSString*) s
 {
 	CSSPrimitiveValue* pv = [[CSSPrimitiveValue alloc] init];
 	

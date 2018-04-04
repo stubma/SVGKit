@@ -19,6 +19,10 @@
 
 @interface SVGElement : Element <SVGStylable>
 
+// client area size of parent element, client area includes padding but exclude margin
+@property (assign, nonatomic, readonly) float parentClientWidth;
+@property (assign, nonatomic, readonly) float parentClientHeight;
+
 @property (nonatomic, readwrite, strong) NSString *identifier; // 'id' is reserved in Obj-C, so we have to break SVG Spec here, slightly
 @property (nonatomic, strong) NSString* xmlbase;
 /*!
@@ -42,6 +46,9 @@
 
 /*! This is used when generating CALayer objects, to store the id of the SVGElement that created the CALayer */
 #define kSVGElementIdentifier @"SVGElementIdentifier"
+
+/* this is used to associate layer and element so we can get element from layer */
+#define kSVGElement "SVGElement"
 
 #pragma mark - SVG-spec supporting methods that aren't in the Spec itself
 
