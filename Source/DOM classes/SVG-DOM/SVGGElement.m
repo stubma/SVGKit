@@ -66,6 +66,15 @@
 	} else if([@"end" isEqualToString:align]) {
 		self.itemAlignment = SVGGAlignItemEnd;
 	}
+	
+	// item justify
+	self.itemJustify = SVGGAlignItemStart;
+	NSString* justify = [self getAttribute:@"justify-item"];
+	if([@"center" isEqualToString:justify]) {
+		self.itemJustify = SVGGAlignItemCenter;
+	} else if([@"end" isEqualToString:justify]) {
+		self.itemJustify = SVGGAlignItemEnd;
+	}
 }
 
 - (float)parentWidth {
@@ -192,6 +201,24 @@
 						frame.origin.x = pl + cw - frame.size.width;
 					} else {
 						frame.origin.y = pt + ch - frame.size.height;
+					}
+					break;
+				default:
+					break;
+			}
+			switch(self.itemJustify) {
+				case SVGGAlignItemCenter:
+					if(self.row) {
+						frame.origin.y = pt + (ch - frame.size.height) / 2;
+					} else {
+						frame.origin.x = pl + (cw - frame.size.width) / 2;
+					}
+					break;
+				case SVGGAlignItemEnd:
+					if(self.row) {
+						frame.origin.y = pt + ch - frame.size.height;
+					} else {
+						frame.origin.x = pl + cw - frame.size.width;
 					}
 					break;
 				default:

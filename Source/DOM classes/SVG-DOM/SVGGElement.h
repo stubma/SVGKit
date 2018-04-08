@@ -36,7 +36,8 @@ typedef enum {
 @property(nonatomic,strong) SVGLength* width;
 @property(nonatomic,strong) SVGLength* height;
 @property(nonatomic,assign) BOOL row;
-@property(nonatomic,assign) SVGGItemAlignment itemAlignment;
+@property(nonatomic,assign) SVGGItemAlignment itemAlignment; // main axis
+@property(nonatomic,assign) SVGGItemAlignment itemJustify; // cross axis
 
 @property (nonatomic, assign, readonly) float absoluteWidth;
 @property (nonatomic, assign, readonly) float absoluteHeight;
