@@ -12,6 +12,7 @@
 #import "SVGUtils.h"
 #import "CSSPrimitiveValue.h"
 #import "SVGRichText.h"
+#import "CATextLayerWithHitTest.h"
 
 @implementation SVGTextElement
 
@@ -63,7 +64,7 @@
 													fontSize:effectiveFontSize];
 	
 	// create text layer
-    CATextLayer *label = [[CATextLayer alloc] init];
+    CATextLayerWithHitTest *label = [[CATextLayerWithHitTest alloc] init];
     [SVGHelperUtilities configureCALayer:label usingElement:self];
 	
 	// set default color

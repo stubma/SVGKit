@@ -10,6 +10,7 @@
 #import "SVGSwitchElement.h"
 #import "NodeList+Mutable.h"
 #import <objc/runtime.h>
+#import "CALayerWithChildHitTest.h"
 
 #import "SVGSVGElement_Mutable.h" // so that changing .size can change the SVG's .viewport
 
@@ -624,6 +625,9 @@ static NSMutableDictionary* globalSVGKImageCache;
 {
 	CALayer *layer = [element newLayer];
 	objc_setAssociatedObject(layer, kSVGElement, element, OBJC_ASSOCIATION_ASSIGN);
+	if(!element.touchable) {
+		[layer performSelectorOnMainThread:@selector(setTouchable:) withObject:@NO waitUntilDone:YES];
+	}
 	
 	layer.hidden = ![self isElementVisible:element];
 	

@@ -25,6 +25,7 @@
 
 -(void)loadDefaults
 {
+	[super loadDefaults];
 	_stopOpacity = 1.0f;
 }
 

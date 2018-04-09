@@ -17,8 +17,8 @@
  *
  * TODO: should this layer be used in SVGEllipseElement, SVGPolygonElement, etc?
  */
-@interface CAShapeLayerWithHitTest : CAShapeLayerWithClipRender {
-    
-}
+@interface CAShapeLayerWithHitTest : CAShapeLayerWithClipRender
+
+@property (assign, nonatomic) BOOL touchable;
 
 @end

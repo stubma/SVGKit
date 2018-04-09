@@ -7,6 +7,20 @@
  */
 @implementation CAShapeLayerWithHitTest
 
+- (instancetype)init {
+	if(self = [super init]) {
+		self.touchable = YES;
+	}
+	return self;
+}
+
+- (instancetype)initWithLayer:(id)layer {
+	if(self = [super initWithLayer:layer]) {
+		self.touchable = YES;
+	}
+	return self;
+}
+
 - (BOOL) containsPoint:(CGPoint)p
 {
 	BOOL boundsContains = CGRectContainsPoint(self.bounds, p); // must be BOUNDS because Apple pre-converts the point to local co-ords before running the test
@@ -25,6 +39,10 @@
 		}
 	}
 	return FALSE;
+}
+
+- (CALayer *)hitTest:(CGPoint)p {
+	return self.touchable ? [super hitTest:p] : nil;
 }
 
 @end

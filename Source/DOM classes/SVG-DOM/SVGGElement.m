@@ -156,7 +156,8 @@
 - (CALayer *) newLayer
 {
 	
-	CALayer* _layer = [CALayerWithChildHitTest layer];
+	CALayerWithChildHitTest* _layer = [CALayerWithChildHitTest layer];
+	_layer.touchable = NO;
 	
 	// set frame
 	// for easy handler, we define g can only contain g or one other element

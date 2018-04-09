@@ -23,6 +23,10 @@
 @property (assign, nonatomic, readonly) float parentClientWidth;
 @property (assign, nonatomic, readonly) float parentClientHeight;
 
+// touchable or not, if not touchable, hitTest returns nil
+// by default it is true
+@property (assign, nonatomic) BOOL touchable;
+
 @property (nonatomic, readwrite, strong) NSString *identifier; // 'id' is reserved in Obj-C, so we have to break SVG Spec here, slightly
 @property (nonatomic, strong) NSString* xmlbase;
 /*!

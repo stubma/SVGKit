@@ -189,7 +189,7 @@
 
 
 - (void)loadDefaults {
-	// to be overriden by subclasses
+	self.touchable = YES;
 }
 
 -(SVGLength*) getAttributeAsSVGLength:(NSString*) attributeName
@@ -238,6 +238,9 @@
 	if( [self getAttributeNode:@"class"])
 	{
 		self.className = [self getAttribute:@"class"];
+	}
+	if([self getAttributeNode:@"touchable"]) {
+		self.touchable = [@"true" isEqualToString:[self getAttribute:@"class"]];
 	}
 	
 	

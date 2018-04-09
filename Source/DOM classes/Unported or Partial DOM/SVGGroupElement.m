@@ -21,6 +21,7 @@
 
 
 - (void)loadDefaults {
+	[super loadDefaults];
 	_opacity = 1.0f;
 }
 

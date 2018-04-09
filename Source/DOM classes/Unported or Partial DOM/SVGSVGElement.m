@@ -49,6 +49,7 @@
 
 -(void)loadDefaults
 {
+	[super loadDefaults];
 	self.styleSheets = [[StyleSheetList alloc] init];
 }
 @synthesize styleSheets;
