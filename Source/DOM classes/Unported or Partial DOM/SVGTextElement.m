@@ -59,9 +59,22 @@
 	/** Convert all whitespace to spaces, and trim leading/trailing (SVG doesn't support leading/trailing whitespace, and doesnt support CR LF etc) */
 	
 	// parse rich text string
-	SVGRichText* rich = [[SVGRichText alloc] initWithTagText:[self.textContent stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-													fontName:actualFamily
-													fontSize:effectiveFontSize];
+	// the rich string can be in following format:
+	// 1. tag format, it is a custom format which use [] to present style info, it is human readable
+	// but not very powerful
+	// 2. base64 format, it is a encoded NSAttributedString
+	NSString* encoding = [self cascadedValueForStylableProperty:@"encoding"];
+	SVGRichText* rich = nil;
+	NSAttributedString* richStr = nil;
+	if([@"base64" isEqualToString:encoding]) {
+		NSData* data = [[NSData alloc] initWithBase64EncodedString:self.textContent
+														   options:NSDataBase64DecodingIgnoreUnknownCharacters];
+		richStr = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+	} else {
+		rich = [[SVGRichText alloc] initWithTagText:[self.textContent stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+										   fontName:actualFamily
+										   fontSize:effectiveFontSize];
+	}
 	
 	// create text layer
     CATextLayerWithHitTest *label = [[CATextLayerWithHitTest alloc] init];
@@ -69,7 +82,9 @@
 	
 	// set default color
 	label.foregroundColor = [SVGHelperUtilities parseFillForElement:self];
-	rich.textColor = [UIColor colorWithCGColor:label.foregroundColor];
+	if(rich) {
+		rich.textColor = [UIColor colorWithCGColor:label.foregroundColor];
+	}
 	
 	/** This is complicated for three reasons.
 	 Partly: Apple and SVG use different defitions for the "origin" of a piece of text
@@ -87,7 +102,17 @@
 	     v. BECAUSE SVG AND APPLE DEFINE ORIGIN DIFFERENTLY: subtract the "untransformed" height of the font ... BUT: pre-transformed ONLY BY the 'multiplying (non-translating)' part of the TRANSFORM.
 	     vi. set the bounds to be (whatever Apple's CoreText says is necessary to render TEXT at FONT SIZE, with NO TRANSFORMS)
 	 */
-    label.bounds = rich.bounds;
+	if(rich) {
+    	label.bounds = rich.bounds;
+	} else {
+		CGRect bounds = [richStr boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
+											 options:NSStringDrawingUsesLineFragmentOrigin
+											 context:nil];
+		bounds.size.width = self.viewport.width;
+		bounds.size.height = self.viewport.height;
+		label.bounds = bounds;
+		label.drawParagraphStyle = YES;
+	}
 	
 	/** add on the local x,y that will NOT BE iNCLUDED IN THE TRANSFORM
 	 AUTOMATICALLY BECAUSE THEY ARE NOT TRANSFORM COMMANDS IN SVG SPEC!!
@@ -102,10 +127,10 @@
 	switch(self.x.anchor) {
 		case CSS_ANCHOR_RT:
 		case CSS_ANCHOR_RB:
-			x = self.viewport.width + x - rich.bounds.size.width;
+			x = self.viewport.width + x - label.bounds.size.width;
 			break;
 		case CSS_ANCHOR_CENTER:
-			x = self.viewport.width / 2 + x - rich.bounds.size.width / 2;
+			x = self.viewport.width / 2 + x - label.bounds.size.width / 2;
 			break;
 		default:
 			break;
@@ -113,10 +138,10 @@
 	switch (self.y.anchor) {
 		case CSS_ANCHOR_RB:
 		case CSS_ANCHOR_LB:
-			y = self.viewport.height + y - rich.bounds.size.height;
+			y = self.viewport.height + y - label.bounds.size.height;
 			break;
 		case CSS_ANCHOR_CENTER:
-			y = self.viewport.height / 2 + y - rich.bounds.size.height / 2;
+			y = self.viewport.height / 2 + y - label.bounds.size.height / 2;
 			break;
 		default:
 			break;
@@ -145,29 +170,33 @@
     else
         label.anchorPoint = CGPointZero; // WARNING: SVG applies transforms around the top-left as origin, whereas Apple defaults to center as origin, so we tell Apple to work "like SVG" here.
 	
-	// alignment
+	// alignment, only valid for tag format
 	NSString *textAlign = [self cascadedValueForStylableProperty:@"text-align"];
 	if([@"right" isEqualToString:textAlign]) {
-		label.alignmentMode = kCAAlignmentCenter;
+		label.alignmentMode = kCAAlignmentRight;
 	} else if([@"center" isEqualToString:textAlign]) {
 		label.alignmentMode = kCAAlignmentCenter;
+	} else if([@"left" isEqualToString:textAlign]) {
+		label.alignmentMode = kCAAlignmentLeft;
+	} else if([@"justified" isEqualToString:textAlign]) {
+		label.alignmentMode = kCAAlignmentJustified;
 	} else {
-    	label.alignmentMode = kCAAlignmentLeft;
+    	label.alignmentMode = kCAAlignmentNatural;
 	}
 	
+	// set transform, font size and final string
 	label.affineTransform = textTransformAbsoluteWithLocalPositionOffset;
 	label.fontSize = effectiveFontSize;
-	label.string = rich.richText;
+	label.string = rich ? rich.richText : richStr;
 	
 #if TARGET_OS_IPHONE
     label.contentsScale = [[UIScreen mainScreen] scale];
 #endif
 
-	/** VERY USEFUL when trying to debug text issues:
-	label.backgroundColor = [UIColor colorWithRed:0.5 green:0 blue:0 alpha:0.5].CGColor;
-	label.borderColor = [UIColor redColor].CGColor;
+	/// VERY USEFUL when trying to debug text issues:
+//	label.backgroundColor = [UIColor colorWithRed:0.5 green:0 blue:0 alpha:0.5].CGColor;
+//	label.borderColor = [UIColor redColor].CGColor;
 	//DEBUG: SVGKitLogVerbose(@"font size %2.1f at %@ ... final frame of layer = %@", effectiveFontSize, NSStringFromCGPoint(transformedOrigin), NSStringFromCGRect(label.frame));
-	*/
 	
     return label;
 }

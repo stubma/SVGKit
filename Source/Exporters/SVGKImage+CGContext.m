@@ -87,7 +87,7 @@
 	[self renderInContext:context];
 	
 	NSMutableString* perfImprovements = [NSMutableString string];
-	if( shouldAntialias )
+	if( !shouldAntialias )
 		[perfImprovements appendString:@" NO-ANTI-ALIAS"];
 	if( perfImprovements.length < 1 )
 		[perfImprovements appendString:@"NONE"];

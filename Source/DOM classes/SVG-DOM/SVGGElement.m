@@ -184,11 +184,21 @@
 	float ch = self.clientHeight;
 	
 	/** make mainrect the UNION of all sublayer's frames (i.e. their individual "bounds" inside THIS layer's space) */
+	CGRect gFrame = layer.frame;
 	for ( CALayer *currentLayer in [layer sublayers] ) {
 		SVGElement* e = (SVGElement*)objc_getAssociatedObject(currentLayer, kSVGElement);
 		if(e && ![e isKindOfClass:[SVGGElement class]]) {
+			// get sub layer frame
 			CGRect frame = currentLayer.frame;
+			
+			// sub layer frame size can not exceed group size
+			frame.size.width = MIN(frame.size.width, gFrame.size.width);
+			frame.size.height = MIN(frame.size.height, gFrame.size.height);
+			
+			// set default origin by padding left and top
 			frame.origin = CGPointMake(pl, pt);
+			
+			// check main axis alignment
 			switch(self.itemAlignment) {
 				case SVGGAlignItemCenter:
 					if(self.row) {
@@ -207,6 +217,8 @@
 				default:
 					break;
 			}
+			
+			// check cross axis alignment
 			switch(self.itemJustify) {
 				case SVGGAlignItemCenter:
 					if(self.row) {
@@ -225,6 +237,8 @@
 				default:
 					break;
 			}
+			
+			// set sub layer frame
 			currentLayer.frame = frame;
 		}
 	}
