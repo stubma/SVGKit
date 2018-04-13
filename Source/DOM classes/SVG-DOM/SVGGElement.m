@@ -23,10 +23,10 @@
 	if( [[self getAttribute:@"padding"] length] > 0 ) {
 		NSArray* paddingElements = [[self getAttribute:@"padding"] componentsSeparatedByString:@" "];
 		if(paddingElements.count == 4) {
-			self.pl = [SVGLength svgLengthFromNSString:paddingElements[0]];
-			self.pt = [SVGLength svgLengthFromNSString:paddingElements[1]];
-			self.pr = [SVGLength svgLengthFromNSString:paddingElements[2]];
-			self.pb = [SVGLength svgLengthFromNSString:paddingElements[3]];
+			self.pt = [SVGLength svgLengthFromNSString:paddingElements[0]];
+			self.pl = [SVGLength svgLengthFromNSString:paddingElements[1]];
+			self.pb = [SVGLength svgLengthFromNSString:paddingElements[2]];
+			self.pr = [SVGLength svgLengthFromNSString:paddingElements[3]];
 		}
 	}
 	if(!self.pl) {
@@ -40,10 +40,10 @@
 	if( [[self getAttribute:@"margin"] length] > 0 ) {
 		NSArray* marginElements = [[self getAttribute:@"margin"] componentsSeparatedByString:@" "];
 		if(marginElements.count == 4) {
-			self.ml = [SVGLength svgLengthFromNSString:marginElements[0]];
-			self.mt = [SVGLength svgLengthFromNSString:marginElements[1]];
-			self.mr = [SVGLength svgLengthFromNSString:marginElements[2]];
-			self.mb = [SVGLength svgLengthFromNSString:marginElements[3]];
+			self.mt = [SVGLength svgLengthFromNSString:marginElements[0]];
+			self.ml = [SVGLength svgLengthFromNSString:marginElements[1]];
+			self.mb = [SVGLength svgLengthFromNSString:marginElements[2]];
+			self.mr = [SVGLength svgLengthFromNSString:marginElements[3]];
 		}
 	}
 	if(!self.ml) {
