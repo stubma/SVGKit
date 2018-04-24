@@ -664,7 +664,7 @@ static void setColorSpan(Span& top, CFMutableAttributedStringRef plainCFAStr, CG
 									   paraStyle);
 		
 		// save rich text
-		self.richText = (__bridge NSAttributedString*)plainCFAStr;
+		self.richText = [[NSAttributedString alloc] initWithAttributedString:(__bridge NSMutableAttributedString*)plainCFAStr];
 		
 		// release
 		CGColorSpaceRelease(colorSpace);

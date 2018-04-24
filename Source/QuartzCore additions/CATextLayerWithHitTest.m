@@ -23,38 +23,20 @@
 
 - (void)drawInContext:(CGContextRef)context {
 	if(self.drawParagraphStyle) {
+		UIGraphicsPushContext(context);
+
+		// set drawing options
+		CGContextSetShouldAntialias(context, YES);
+
+		// set drawing options
+		CGContextSetTextDrawingMode(context, kCGTextFill);
+
 		// create frame setter
 		NSAttributedString* text = (NSAttributedString*)self.string;
-		CTFramesetterRef fs = CTFramesetterCreateWithAttributedString((__bridge CFAttributedStringRef)text);
-		
-		// create frame
-		CGMutablePathRef path = CGPathCreateMutable();
-		CGPathAddRect(path, NULL, self.bounds);
-		CTFrameRef frame = CTFramesetterCreateFrame(fs,
-													CFRangeMake(0, 0),
-													path,
-													NULL);
-		CFRelease(path);
-		
+		[text drawInRect:self.bounds];
+
 		// set current context
 		UIGraphicsPushContext(context);
-		
-		// alow anti-aliasing
-		CGContextSetAllowsAntialiasing(context, YES);
-		
-		// vertical alignment
-		CGContextTranslateCTM(context, 0, self.bounds.size.height);
-		CGContextScaleCTM(context, 1.0, -1.0);
-		
-		// draw
-		CTFrameDraw(frame, context);
-		
-		// pop
-		UIGraphicsPopContext();
-		
-		// release
-		CFRelease(fs);
-		CFRelease(frame);
 	} else {
 		[super drawInContext:context];
 	}
