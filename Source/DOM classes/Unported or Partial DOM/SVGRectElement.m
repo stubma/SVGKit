@@ -74,8 +74,32 @@ void CGPathAddRoundedRect (CGMutablePathRef path, CGRect rect, CGFloat radiusX, 
 	CGRect rect = CGRectMake([_x pixelsValueWithDimension:pcw], [_y pixelsValueWithDimension:pch],
 							 [_width pixelsValueWithDimension:pcw], [_height pixelsValueWithDimension:pch]);
 	
-	CGFloat radiusXPixels = _rx != nil ? [_rx pixelsValue] : 0;
-	CGFloat radiusYPixels = _ry != nil ? [_ry pixelsValue] : 0;
+	// handle anchor
+	switch(_x.anchor) {
+		case CSS_ANCHOR_TR:
+		case CSS_ANCHOR_BR:
+			rect.origin.x = pcw - rect.size.width + rect.origin.x;
+			break;
+		case CSS_ANCHOR_CENTER:
+			rect.origin.x = pcw / 2 - rect.size.width / 2 + rect.origin.x;
+			break;
+		default:
+			break;
+	}
+	switch (_y.anchor) {
+		case CSS_ANCHOR_BL:
+		case CSS_ANCHOR_BR:
+			rect.origin.y = pch - rect.size.height + rect.origin.y;
+			break;
+		case CSS_ANCHOR_CENTER:
+			rect.origin.y = pch / 2 - rect.size.height / 2 + rect.origin.y;
+			break;
+		default:
+			break;
+	}
+	
+	CGFloat radiusXPixels = _rx != nil ? [_rx pixelsValueWithDimension:pcw] : 0;
+	CGFloat radiusYPixels = _ry != nil ? [_ry pixelsValueWithDimension:pch] : 0;
 	
 	if( radiusXPixels == 0 && radiusYPixels == 0 )
 	{

@@ -83,10 +83,10 @@ typedef enum CSSPrimitiveType
 
 typedef enum {
 	CSS_ANCHOR_NONE = 0,
-	CSS_ANCHOR_LT,
-	CSS_ANCHOR_LB,
-	CSS_ANCHOR_RT,
-	CSS_ANCHOR_RB,
+	CSS_ANCHOR_TL,
+	CSS_ANCHOR_BL,
+	CSS_ANCHOR_TR,
+	CSS_ANCHOR_BR,
 	CSS_ANCHOR_CENTER
 } CSSRelativeAnchor;
 

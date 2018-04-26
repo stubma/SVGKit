@@ -24,10 +24,10 @@
 @synthesize primitiveType;
 
 + (NSDictionary<NSNumber*, NSString*>*)anchorIdMap {
-	return @{@(CSS_ANCHOR_LB): @"lb",
-			 @(CSS_ANCHOR_LT): @"lt",
-			 @(CSS_ANCHOR_RT): @"rt",
-			 @(CSS_ANCHOR_RB): @"rb",
+	return @{@(CSS_ANCHOR_BL): @"bl",
+			 @(CSS_ANCHOR_TL): @"tl",
+			 @(CSS_ANCHOR_TR): @"tr",
+			 @(CSS_ANCHOR_BR): @"br",
 			 @(CSS_ANCHOR_CENTER): @"c"
 			 };
 }
@@ -41,10 +41,10 @@
     self = [super initWithUnitType:CSS_PRIMITIVE_VALUE];
     if (self) {
 		self.pixelsPerInch = 1.0f; // this can be overridden by classes that import the CSSPrimitiveValue_ConfigurablePixelsPerInch.h header
-		self.anchorNameMap = @{@"lb": @(CSS_ANCHOR_LB),
-							   @"lt": @(CSS_ANCHOR_LT),
-							   @"rt": @(CSS_ANCHOR_RT),
-							   @"rb": @(CSS_ANCHOR_RB),
+		self.anchorNameMap = @{@"bl": @(CSS_ANCHOR_BL),
+							   @"tl": @(CSS_ANCHOR_TL),
+							   @"tr": @(CSS_ANCHOR_TR),
+							   @"br": @(CSS_ANCHOR_BR),
 							   @"c": @(CSS_ANCHOR_CENTER)
 							   };
 		self.anchor = CSS_ANCHOR_NONE;

@@ -125,8 +125,8 @@
 	float x = [self.x pixelsValue];
 	float y = [self.y pixelsValue];
 	switch(self.x.anchor) {
-		case CSS_ANCHOR_RT:
-		case CSS_ANCHOR_RB:
+		case CSS_ANCHOR_TR:
+		case CSS_ANCHOR_BR:
 			x = self.viewport.width + x - label.bounds.size.width;
 			break;
 		case CSS_ANCHOR_CENTER:
@@ -136,8 +136,8 @@
 			break;
 	}
 	switch (self.y.anchor) {
-		case CSS_ANCHOR_RB:
-		case CSS_ANCHOR_LB:
+		case CSS_ANCHOR_BR:
+		case CSS_ANCHOR_BL:
 			y = self.viewport.height + y - label.bounds.size.height;
 			break;
 		case CSS_ANCHOR_CENTER:
