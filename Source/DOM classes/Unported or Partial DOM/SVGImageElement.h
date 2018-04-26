@@ -8,10 +8,10 @@
 
 @interface SVGImageElement : SVGElement <SVGTransformable, SVGStylable, ConverterSVGToCALayer, SVGFitToViewBox>
 
-@property (nonatomic, readonly) CGFloat x;
-@property (nonatomic, readonly) CGFloat y;
-@property (nonatomic, readonly) CGFloat width;
-@property (nonatomic, readonly) CGFloat height;
+@property (nonatomic, readonly) SVGLength* x;
+@property (nonatomic, readonly) SVGLength* y;
+@property (nonatomic, readonly) SVGLength* width;
+@property (nonatomic, readonly) SVGLength* height;
 
 @property (nonatomic, strong, readonly) NSString *href;
 

@@ -55,16 +55,16 @@ CGImageRef SVGImageCGImage(AppleNativeImageRef img)
 	[super postProcessAttributesAddingErrorsTo:parseResult];
 
 	if( [[self getAttribute:@"x"] length] > 0 )
-	_x = [[self getAttribute:@"x"] floatValue];
+		_x = [SVGLength svgLengthFromNSString:[self getAttribute:@"x"]];
 
 	if( [[self getAttribute:@"y"] length] > 0 )
-	_y = [[self getAttribute:@"y"] floatValue];
+		_y = [SVGLength svgLengthFromNSString:[self getAttribute:@"y"]];
 
 	if( [[self getAttribute:@"width"] length] > 0 )
-	_width = [[self getAttribute:@"width"] floatValue];
+		_width = [SVGLength svgLengthFromNSString:[self getAttribute:@"width"]];
 
 	if( [[self getAttribute:@"height"] length] > 0 )
-	_height = [[self getAttribute:@"height"] floatValue];
+		_height = [SVGLength svgLengthFromNSString:[self getAttribute:@"height"]];
 
 	if( [[self getAttribute:@"href"] length] > 0 )
         self.href = [self getAttribute:@"href"];
@@ -144,12 +144,40 @@ CGImageRef SVGImageCGImage(AppleNativeImageRef img)
     
 	if( image != nil )
 	{
-        CGRect frame = CGRectMake(_x, _y, _width, _height);
-        
+		// create frame rect
+		float pcw = self.parentClientWidth;
+		float pch = self.parentClientHeight;
+		CGRect frame = CGRectMake([_x pixelsValueWithDimension:pcw], [_y pixelsValueWithDimension:pch],
+								 [_width pixelsValueWithDimension:pcw], [_height pixelsValueWithDimension:pch]);
+		
+		// handle anchor
+		switch(_x.anchor) {
+			case CSS_ANCHOR_TR:
+			case CSS_ANCHOR_BR:
+				frame.origin.x = pcw - frame.size.width + frame.origin.x;
+				break;
+			case CSS_ANCHOR_CENTER:
+				frame.origin.x = pcw / 2 - frame.size.width / 2 + frame.origin.x;
+				break;
+			default:
+				break;
+		}
+		switch (_y.anchor) {
+			case CSS_ANCHOR_BL:
+			case CSS_ANCHOR_BR:
+				frame.origin.y = pch - frame.size.height + frame.origin.y;
+				break;
+			case CSS_ANCHOR_CENTER:
+				frame.origin.y = pch / 2 - frame.size.height / 2 + frame.origin.y;
+				break;
+			default:
+				break;
+		}
+		
         if( imageData )
             self.viewBox = SVGRectMake(0, 0, image.size.width, image.size.height);
         else
-            self.viewBox = SVGRectMake(0, 0, _width, _height);
+            self.viewBox = SVGRectMake(0, 0, frame.size.width, frame.size.height);
         
         CGImageRef imageRef = SVGImageCGImage(image);
         BOOL imageRefHasBeenRetained = false; // only one codepath CREATES a new image, because of Apple's API; the rest use an existing reference
@@ -270,7 +298,11 @@ CGImageRef SVGImageCGImage(AppleNativeImageRef img)
 
 -(double)aspectRatioFromWidthPerHeight
 {
-    return self.height == 0 ? 0 : self.width / self.height;
+	float pcw = self.parentClientWidth;
+	float pch = self.parentClientHeight;
+	CGFloat w = [self.width pixelsValueWithDimension:pcw];
+	CGFloat h = [self.height pixelsValueWithDimension:pch];
+    return h == 0 ? 0 : w / h;
 }
 
 -(double)aspectRatioFromViewBox
