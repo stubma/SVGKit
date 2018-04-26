@@ -14,6 +14,12 @@
 
 #define DEBUG_SVG_ELEMENT_PARSING 0
 
+typedef enum {
+	SVGGAlignItemStart = 0,
+	SVGGAlignItemCenter,
+	SVGGAlignItemEnd
+} SVGGItemAlignment;
+
 @class SVGSVGElement;
 //obj-c's compiler sucks, and doesn't allow this line: #import "SVGSVGElement.h"
 
@@ -22,6 +28,10 @@
 // client area size of parent element, client area includes padding but exclude margin
 @property (assign, nonatomic, readonly) float parentClientWidth;
 @property (assign, nonatomic, readonly) float parentClientHeight;
+
+// alignment, only useful in <g> element
+@property(nonatomic,assign) SVGGItemAlignment itemAlignment; // main axis
+@property(nonatomic,assign) SVGGItemAlignment itemJustify; // cross axis
 
 // touchable or not, if not touchable, hitTest returns nil
 // by default it is true

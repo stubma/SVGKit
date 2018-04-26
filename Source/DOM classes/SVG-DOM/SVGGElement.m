@@ -57,24 +57,6 @@
 	self.width = [self getAttributeAsSVGLength:@"width"];
 	self.height = [self getAttributeAsSVGLength:@"height"];
 	self.row = [@"true" isEqualToString:[self getAttribute:@"row"]];
-	
-	// item alignment
-	self.itemAlignment = SVGGAlignItemStart;
-	NSString* align = [self getAttribute:@"align-item"];
-	if([@"center" isEqualToString:align]) {
-		self.itemAlignment = SVGGAlignItemCenter;
-	} else if([@"end" isEqualToString:align]) {
-		self.itemAlignment = SVGGAlignItemEnd;
-	}
-	
-	// item justify
-	self.itemJustify = SVGGAlignItemStart;
-	NSString* justify = [self getAttribute:@"justify-item"];
-	if([@"center" isEqualToString:justify]) {
-		self.itemJustify = SVGGAlignItemCenter;
-	} else if([@"end" isEqualToString:justify]) {
-		self.itemJustify = SVGGAlignItemEnd;
-	}
 }
 
 - (float)parentWidth {
@@ -199,7 +181,7 @@
 			frame.origin = CGPointMake(pl, pt);
 			
 			// check main axis alignment
-			switch(self.itemAlignment) {
+			switch(e.itemAlignment) {
 				case SVGGAlignItemCenter:
 					if(self.row) {
 						frame.origin.x = pl + (cw - frame.size.width) / 2;
@@ -219,7 +201,7 @@
 			}
 			
 			// check cross axis alignment
-			switch(self.itemJustify) {
+			switch(e.itemJustify) {
 				case SVGGAlignItemCenter:
 					if(self.row) {
 						frame.origin.y = pt + (ch - frame.size.height) / 2;

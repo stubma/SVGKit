@@ -243,6 +243,23 @@
 		self.touchable = [@"true" isEqualToString:[self getAttribute:@"class"]];
 	}
 	
+	// item alignment
+	self.itemAlignment = SVGGAlignItemStart;
+	NSString* align = [self getAttribute:@"align"];
+	if([@"center" isEqualToString:align]) {
+		self.itemAlignment = SVGGAlignItemCenter;
+	} else if([@"end" isEqualToString:align]) {
+		self.itemAlignment = SVGGAlignItemEnd;
+	}
+	
+	// item justify
+	self.itemJustify = SVGGAlignItemStart;
+	NSString* justify = [self getAttribute:@"justify"];
+	if([@"center" isEqualToString:justify]) {
+		self.itemJustify = SVGGAlignItemCenter;
+	} else if([@"end" isEqualToString:justify]) {
+		self.itemJustify = SVGGAlignItemEnd;
+	}
 	
 	/**
 	 http://www.w3.org/TR/SVG/coords.html#TransformAttribute

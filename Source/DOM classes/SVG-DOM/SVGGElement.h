@@ -17,12 +17,6 @@
 #import "ConverterSVGToCALayer.h"
 #import "SVGTransformable.h"
 
-typedef enum {
-	SVGGAlignItemStart = 0,
-	SVGGAlignItemCenter,
-	SVGGAlignItemEnd
-} SVGGItemAlignment;
-
 @interface SVGGElement : SVGElement <SVGTransformable, SVGStylable, ConverterSVGToCALayer >
 
 @property(nonatomic,strong) SVGLength* pt;
@@ -36,8 +30,6 @@ typedef enum {
 @property(nonatomic,strong) SVGLength* width;
 @property(nonatomic,strong) SVGLength* height;
 @property(nonatomic,assign) BOOL row;
-@property(nonatomic,assign) SVGGItemAlignment itemAlignment; // main axis
-@property(nonatomic,assign) SVGGItemAlignment itemJustify; // cross axis
 
 @property (nonatomic, assign, readonly) float absoluteWidth;
 @property (nonatomic, assign, readonly) float absoluteHeight;
