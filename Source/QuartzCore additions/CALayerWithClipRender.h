@@ -10,6 +10,8 @@
 
 @interface CALayerWithClipRender : CALayer
 
+@property (assign, nonatomic) BOOL touchable;
+
 + (void)maskLayer:(CALayer *)layer inContext:(CGContextRef)ctx;
 
 @end

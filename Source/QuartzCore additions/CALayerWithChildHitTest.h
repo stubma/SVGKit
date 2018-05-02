@@ -16,6 +16,4 @@
  */
 @interface CALayerWithChildHitTest : CALayerWithClipRender
 
-@property (assign, nonatomic) BOOL touchable;
-
 @end
