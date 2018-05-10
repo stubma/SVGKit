@@ -6,6 +6,7 @@
 - (instancetype)init {
 	if(self = [super init]) {
 		self.touchable = YES;
+		self.insets = UIEdgeInsetsZero;
 	}
 	return self;
 }
@@ -13,6 +14,7 @@
 - (instancetype)initWithLayer:(id)layer {
 	if(self = [super initWithLayer:layer]) {
 		self.touchable = YES;
+		self.insets = UIEdgeInsetsZero;
 	}
 	return self;
 }
@@ -31,9 +33,16 @@
 		// set drawing options
 		CGContextSetTextDrawingMode(context, kCGTextFill);
 
-		// create frame setter
+		// draw text
+		CGRect rect = self.bounds;
+		rect.origin.x += self.insets.left;
+		rect.origin.y += self.insets.top;
+		rect.size.width -= self.insets.left + self.insets.right;
+		rect.size.height -= self.insets.top + self.insets.bottom;
 		NSAttributedString* text = (NSAttributedString*)self.string;
-		[text drawInRect:self.bounds];
+		[text drawWithRect:rect
+				   options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
+				   context:nil];
 
 		// set current context
 		UIGraphicsPushContext(context);

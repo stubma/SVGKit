@@ -106,12 +106,28 @@
     	label.bounds = rich.bounds;
 	} else {
 		CGRect bounds = [richStr boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
-											 options:NSStringDrawingUsesLineFragmentOrigin
+											 options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
 											 context:nil];
 		bounds.size.width = self.viewport.width;
 		bounds.size.height = self.viewport.height;
 		label.bounds = bounds;
 		label.drawParagraphStyle = YES;
+	}
+	
+	// set text insets
+	NSString* insets = [self cascadedValueForStylableProperty:@"insets"];
+	if(insets) {
+		NSArray* insetsElements = [insets componentsSeparatedByString:@" "];
+		if(insetsElements.count == 4) {
+			SVGLength* insetTop = [SVGLength svgLengthFromNSString:insetsElements[0]];
+			SVGLength* insetLeft = [SVGLength svgLengthFromNSString:insetsElements[1]];
+			SVGLength* insetBottom = [SVGLength svgLengthFromNSString:insetsElements[2]];
+			SVGLength* insetRight = [SVGLength svgLengthFromNSString:insetsElements[3]];
+			label.insets = UIEdgeInsetsMake([insetTop pixelsValueWithDimension:label.bounds.size.height],
+											[insetLeft pixelsValueWithDimension:label.bounds.size.width],
+											[insetBottom pixelsValueWithDimension:label.bounds.size.height],
+											[insetRight pixelsValueWithDimension:label.bounds.size.width]);
+		}
 	}
 	
 	/** add on the local x,y that will NOT BE iNCLUDED IN THE TRANSFORM
