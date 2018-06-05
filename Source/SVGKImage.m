@@ -624,11 +624,19 @@ static NSMutableDictionary* globalSVGKImageCache;
 - (CALayer *)newLayerWithElement:(SVGElement <ConverterSVGToCALayer> *)element
 {
 	CALayer *layer = [element newLayer];
+	
+	// bind layer with element
 	objc_setAssociatedObject(layer, kSVGElement, element, OBJC_ASSOCIATION_ASSIGN);
+	
+	// set touchable
 	if(!element.touchable) {
 		[layer performSelectorOnMainThread:@selector(setTouchable:) withObject:@NO waitUntilDone:YES];
 	}
 	
+	// set id
+	[layer setValue:element.identifier forKey:kSVGElementIdentifier];
+	
+	// hidden?
 	layer.hidden = ![self isElementVisible:element];
 	
 	//DEBUG: SVGKitLogVerbose(@"[%@] DEBUG: converted SVG element (class:%@) to CALayer (class:%@ frame:%@ pointer:%@) for id = %@", [self class], NSStringFromClass([element class]), NSStringFromClass([layer class]), NSStringFromCGRect( layer.frame ), layer, element.identifier);
