@@ -71,9 +71,9 @@
 														   options:NSDataBase64DecodingIgnoreUnknownCharacters];
 		richStr = [NSKeyedUnarchiver unarchiveObjectWithData:data];
 	} else {
-		rich = [[SVGRichText alloc] initWithTagText:[self.textContent stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
-										   fontName:actualFamily
-										   fontSize:effectiveFontSize];
+		rich = [[SVGRichText alloc] initWithTagText:[self.textContent stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
+		rich.fontName = actualFamily;
+		rich.fontSize = effectiveFontSize;
 	}
 	
 	// create text layer

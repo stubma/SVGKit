@@ -17,9 +17,11 @@
 // constraint size, or zero if no constraint
 @property (assign, nonatomic) CGSize constraintSize;
 
+// property for text
+@property (copy, nonatomic) NSString* fontName;
+@property (assign, nonatomic) CGFloat fontSize;
+@property (assign, nonatomic) NSTextAlignment alignment;
+
 - (instancetype)initWithTagText:(NSString*)tagText;
-- (instancetype)initWithTagText:(NSString*)tagText fontName:(NSString*)fontName;
-- (instancetype)initWithTagText:(NSString*)tagText fontName:(NSString*)fontName fontSize:(CGFloat)fontSize;
-- (instancetype)initWithTagText:(NSString*)tagText fontName:(NSString*)fontName fontSize:(CGFloat)fontSize alignment:(NSTextAlignment)alignment;
 
 @end

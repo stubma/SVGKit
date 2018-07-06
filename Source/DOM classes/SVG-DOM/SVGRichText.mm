@@ -327,11 +327,6 @@ static void setColorSpan(Span& top, CFMutableAttributedStringRef plainCFAStr, CG
 // attribute string in custom tag format
 @property (copy, nonatomic) NSString* tagText;
 
-// default property for text
-@property (copy, nonatomic) NSString* fontName;
-@property (assign, nonatomic) CGFloat fontSize;
-@property (assign, nonatomic) NSTextAlignment alignment;
-
 - (void)buildRichText;
 - (void)measureRichText;
 
@@ -340,23 +335,11 @@ static void setColorSpan(Span& top, CFMutableAttributedStringRef plainCFAStr, CG
 @implementation SVGRichText
 
 - (instancetype)initWithTagText:(NSString*)tagText {
-	return [self initWithTagText:tagText fontName:@"Helvetica"];
-}
-
-- (instancetype)initWithTagText:(NSString*)tagText fontName:(NSString*)fontName {
-	return [self initWithTagText:tagText fontName:fontName fontSize:20];
-}
-
-- (instancetype)initWithTagText:(NSString*)tagText fontName:(NSString*)fontName fontSize:(CGFloat)fontSize {
-	return [self initWithTagText:tagText fontName:fontName fontSize:fontSize alignment:NSTextAlignmentLeft];
-}
-
-- (instancetype)initWithTagText:(NSString*)tagText fontName:(NSString*)fontName fontSize:(CGFloat)fontSize alignment:(NSTextAlignment)alignment {
 	if(self = [super init]) {
 		self.tagText = tagText;
-		self.fontName = fontName;
-		self.fontSize = fontSize;
-		self.alignment = alignment;
+		self.fontName = @"Helvetica";
+		self.fontSize = 20;
+		self.alignment = NSTextAlignmentLeft;
 		self.textColor = [UIColor blackColor];
 		self.lineSpacing = 0;
 		self.constraintSize = CGSizeZero;
