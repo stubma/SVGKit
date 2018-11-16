@@ -37,6 +37,8 @@ typedef enum {
 // by default it is true
 @property (assign, nonatomic) BOOL touchable;
 
+@property (assign, nonatomic) int z;
+
 @property (nonatomic, readwrite, strong) NSString *identifier; // 'id' is reserved in Obj-C, so we have to break SVG Spec here, slightly
 @property (nonatomic, strong) NSString* xmlbase;
 /*!
@@ -60,6 +62,7 @@ typedef enum {
 
 /*! This is used when generating CALayer objects, to store the id of the SVGElement that created the CALayer */
 #define kSVGElementIdentifier @"SVGElementIdentifier"
+#define kSVGElementZ @"SVGElementZ"
 
 /* this is used to associate layer and element so we can get element from layer */
 #define kSVGElement "SVGElement"

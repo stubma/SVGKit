@@ -635,6 +635,7 @@ static NSMutableDictionary* globalSVGKImageCache;
 	
 	// set id
 	[layer setValue:element.identifier forKey:kSVGElementIdentifier];
+	[layer setValue:@(element.z) forKey:kSVGElementZ];
 	
 	// hidden?
 	layer.hidden = ![self isElementVisible:element];

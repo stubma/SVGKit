@@ -5,6 +5,7 @@
 //
 
 #import "CALayerWithChildHitTest.h"
+#import "SVGElement.h"
 
 @implementation CALayerWithChildHitTest
 
@@ -50,7 +51,28 @@
 }
 
 - (CALayer *)hitTest:(CGPoint)p {
-	return self.touchable ? [super hitTest:p] : nil;
+	// check sublayers, pick max z order hit
+	int maxZ = INT_MIN;
+	NSInteger size = self.sublayers.count;
+	CALayer* topHit = nil;
+	for(NSInteger i = 0; i < size; i++) {
+		CGPoint ps = [self convertPoint:p toLayer:self.sublayers[i]];
+		CALayer* hit = [self.sublayers[i] hitTest:ps];
+		if(hit) {
+			int z = [[hit valueForKey:kSVGElementZ] intValue];
+			if(z > maxZ) {
+				topHit = hit;
+				maxZ = z;
+			}
+		}
+	}
+	
+	// if has hit, return, otherwise check self
+	if(topHit) {
+		return topHit;
+	} else {
+		return (self.touchable && [self containsPoint:p]) ? self : nil;
+	}
 }
 
 @end

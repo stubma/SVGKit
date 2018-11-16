@@ -242,6 +242,9 @@
 	if([self getAttributeNode:@"touchable"]) {
 		self.touchable = [@"true" isEqualToString:[self getAttribute:@"class"]];
 	}
+	if([self getAttributeNode:@"z"]) {
+		self.z = [[self getAttribute:@"z"] intValue];
+	}
 	
 	// item alignment
 	self.itemAlignment = SVGGAlignItemStart;
