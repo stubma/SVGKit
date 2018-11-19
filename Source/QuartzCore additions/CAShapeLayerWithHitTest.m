@@ -50,7 +50,7 @@
 	for(NSInteger i = 0; i < size; i++) {
 		CGPoint ps = [self convertPoint:p toLayer:self.sublayers[i]];
 		CALayer* hit = [self.sublayers[i] hitTest:ps];
-		if(hit) {
+		if(hit && !hit.hidden) {
 			int z = [[hit valueForKey:kSVGElementZ] intValue];
 			if(z > maxZ) {
 				topHit = hit;
