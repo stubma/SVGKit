@@ -244,15 +244,12 @@ static NSMutableDictionary* globalSVGKImageCache;
 
 + (SVGKParser*) imageParserWithDataAsynchronously:(NSData *)newNSData onCompletion:(SVGKImageAsynchronousLoadingDelegate)blockCompleted {
     NSParameterAssert(newNSData != nil);
-    SVGKitLogWarn(@"Creating an SVG from raw data; this is not recommended: SVG requires knowledge of at least the URL where it came from (as it can contain relative file-links internally). You should use the method [SVGKImage initWithSource:] instead and specify an SVGKSource with more detail" );
-
     return [self imageWithSource:[SVGKSourceNSData sourceFromData:newNSData URLForRelativeLinks:nil] onCompletion:blockCompleted];
 }
 
 + (SVGKImage*) imageWithDataAsynchronously:(NSData *)newNSData onCompletion:(SVGKImageAsynchronousLoadingDelegate)blockCompleted
 {
 	NSParameterAssert(newNSData != nil);
-	SVGKitLogWarn(@"Creating an SVG from raw data; this is not recommended: SVG requires knowledge of at least the URL where it came from (as it can contain relative file-links internally). You should use the method [SVGKImage initWithSource:] instead and specify an SVGKSource with more detail" );
 
     __block SVGKImage *image;
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
@@ -333,9 +330,6 @@ static NSMutableDictionary* globalSVGKImageCache;
 - (id)initWithData:(NSData *)data
 {
 	NSParameterAssert(data != nil);
-	
-	SVGKitLogWarn(@"Creating an SVG from raw data; this is not recommended: SVG requires knowledge of at least the URL where it came from (as it can contain relative file-links internally). You should use the method [SVGKImage initWithSource:] instead and specify an SVGKSource with more detail" );
-	
 	return [self initWithSource:[SVGKSourceNSData sourceFromData:data URLForRelativeLinks:nil]];
 }
 
@@ -629,8 +623,8 @@ static NSMutableDictionary* globalSVGKImageCache;
 	objc_setAssociatedObject(layer, kSVGElement, element, OBJC_ASSOCIATION_ASSIGN);
 	
 	// set touchable
-	if(!element.touchable) {
-		[layer performSelectorOnMainThread:@selector(setTouchable:) withObject:@NO waitUntilDone:YES];
+	if(!element.touchable && [layer respondsToSelector:@selector(setTouchable:)]) {
+		[(id)layer setTouchable:false];
 	}
 	
 	// set id
@@ -799,15 +793,9 @@ static NSMutableDictionary* globalSVGKImageCache;
 {
 	if( CALayerTree == nil )
 	{
-		SVGKitLogInfo(@"[%@] WARNING: no CALayer tree found, creating a new one (will cache it once generated)", [self class] );
-
 		NSDate* startTime = [NSDate date];
 		self.CALayerTree = [self newCALayerTree];
-		
-		SVGKitLogInfo(@"[%@] ...time taken to convert from DOM to fresh CALayers: %2.3f seconds)", [self class], -1.0f * [startTime timeIntervalSinceNow] );		
 	}
-	else
-		SVGKitLogVerbose(@"[%@] fetching CALayerTree: re-using cached CALayers (FREE))", [self class] );
 	
 	return CALayerTree;
 }
