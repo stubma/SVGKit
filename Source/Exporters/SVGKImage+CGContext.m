@@ -44,9 +44,6 @@
 	
 	startTime = [NSDate date];
 	
-	if( SVGRectIsInitialized(self.DOMTree.viewport) )
-		SVGKitLogInfo(@"[%@] DEBUG: rendering to CGContext using the current root-object's viewport (may have been overridden by user code): %@", [self class], NSStringFromCGRect(CGRectFromSVGRect(self.DOMTree.viewport)) );
-	
 	/** Typically a 10% performance improvement right here */
 	if( !shouldAntialias )
 		CGContextSetShouldAntialias( context, FALSE );
@@ -91,8 +88,6 @@
 		[perfImprovements appendString:@" NO-ANTI-ALIAS"];
 	if( perfImprovements.length < 1 )
 		[perfImprovements appendString:@"NONE"];
-	
-	SVGKitLogVerbose(@"[%@] renderToContext: time taken to render CALayers to CGContext (perf improvements:%@): %2.3f seconds)", [self class], perfImprovements, -1.0f * [startTime timeIntervalSinceNow] );
 }
 
 @end
